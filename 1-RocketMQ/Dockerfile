@@ -7,7 +7,7 @@ LABEL description="Base on centOS7, openJDK11"
 ENV REFRESHED_AT 2020.12
 ENV LANG C.UTF-8
 
-ARG RESOURCE_PATH=resource
+ARG RESOURCE_PATH=resources
 ARG INSTALLATION_PATH=/usr/share
 
 # Setup openJDK-11 start --
