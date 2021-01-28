@@ -1,0 +1,8 @@
+docker run  -it  -d \
+ --name jenkins-bis  \
+ --volume /home/dockerstorage/dockervolume/bis/jenkins-data:/var/jenkins_home \
+ --volume /home/dockerstorage/dockervolume/bis/jdk:/usr/share/otherjdk \
+ --volume /etc/localtime:/etc/localtime \
+ --env TZ=Asia/Shanghai  \
+ --publish 8000:8080  \
+--publish 20000:50000 jenkins:1.0

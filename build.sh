@@ -1,4 +1,3 @@
-set -o verbose
 base_path=$(pwd)
 build_target=$1
 image_name=$2
@@ -24,9 +23,11 @@ elif [ ! -s "$build_target_path"/Dockerfile ]; then
   echo "dockerfile not exsit"
   return
 fi
-
+echo "Start building image..."
 cp "$build_target_path"/Dockerfile "$base_path"/Dockerfile
 
-docker build --no-cache -t "$image_name" .
+docker build \
+-t "$image_name" .
 
 rm -f "$base_path"/Dockerfile
+
