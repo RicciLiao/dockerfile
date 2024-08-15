@@ -10,6 +10,15 @@ ENV LANG C.UTF-8
 ARG RESOURCE_PATH=resources
 ARG INSTALLATION_PATH=/usr/share
 
+# Setup NodeJS start --
+ENV NODEJS_HOME ${INSTALLATION_PATH}/node-v12.22.12
+ADD ${RESOURCE_PATH}/node-v12.22.12.tar.gz $NODEJS_HOME
+RUN chmod +x -R $NODEJS_HOME
+ENV PATH $PATH:${NODEJS_HOME}/bin
+RUN rm $NODEJS_HOME/bin/npm
+RUN ln -s $NODEJS_HOME/lib/node_modules/npm/bin/npm-cli.js $NODEJS_HOME/bin/npm
+# Setup NodeJS end --
+
 # Setup openJDK-11 start --
 ADD ${RESOURCE_PATH}/openjdk-11-dependency-rpm.tar.gz ${INSTALLATION_PATH}/openjdk-11-dependency
 RUN yum localinstall -y ${INSTALLATION_PATH}/openjdk-11-dependency/*.rpm
@@ -32,8 +41,8 @@ RUN yum localinstall -y ${INSTALLATION_PATH}/git-1.8.3/*.rpm
 # Setup Git end --
 
 #Setup unzip start --
-ADD ${RESOURCE_PATH}/unzip-6.0-21.tar.gz ${INSTALLATION_PATH}/unzip-6.0-21/
-RUN yum localinstall -y ${INSTALLATION_PATH}/unzip-6.0-21/*.rpm
+ADD ${RESOURCE_PATH}/unzip-6.0.tar.gz ${INSTALLATION_PATH}/unzip-6.0/
+RUN yum localinstall -y ${INSTALLATION_PATH}/unzip-6.0/*.rpm
 #Setup unzip end --
 
 # Setup Jenkins start --
@@ -43,8 +52,8 @@ ARG AGENT_PORT=50000
 ARG JENKINS_HOME=/var/jenkins_home
 ARG REF=${JENKINS_PATH}/ref
 ARG TINI_VERSION=v0.16.1
-ARG JENKINS_VERSION=2.263.2
-ARG JENKINS_SHA=89d054193d541b8d542f61e13262daf842b13fd5c04bfdc52765c70346f0878e
+ARG JENKINS_VERSION=2.277.1
+ARG JENKINS_SHA=399741db1152ee7bbe8dc08e0972efa0b128a1b55a0f8b10c087fefeec66d151
 
 RUN mkdir -p ${JENKINS_HOME} \
  && mkdir -p ${JENKINS_PATH} \
@@ -62,7 +71,6 @@ RUN cp ${JENKINS_PATH}/tini_pub.gpg ${JENKINS_HOME}/tini_pub.gpg \
  && cp ${JENKINS_PATH}/tini-static-amd64 /sbin/tini \
  && cp ${JENKINS_PATH}/tini-static-amd64.asc /sbin/tini.asc \
  && cp ${JENKINS_PATH}/jenkins-plugin-manager-2.2.0.jar /usr/lib/jenkins-plugin-manager.jar \
- && cp ${JENKINS_PATH}/jenkins-plugin-manager-retry-2.2.0.jar /usr/lib/jenkins-plugin-manager-retry.jar \
  && gpg --no-tty --import ${JENKINS_HOME}/tini_pub.gpg \
  && gpg --verify /sbin/tini.asc \
  && rm -rf /sbin/tini.asc /root/.gnupg \
@@ -85,14 +93,13 @@ RUN cp ${JENKINS_PATH}/jenkins-support /usr/local/bin/jenkins-support \
  && cp ${JENKINS_PATH}/jenkins.sh /usr/local/bin/jenkins.sh \
  && cp ${JENKINS_PATH}/tini-shim.sh /bin/tini \
  && cp ${JENKINS_PATH}/jenkins-plugin-cli.sh /bin/jenkins-plugin-cli \
- && cp ${JENKINS_PATH}/install-plugins.sh /usr/local/bin/install-plugins.sh \
- && cp ${JENKINS_PATH}/jenkins-plugin-cli-proxy-retry.sh /bin/jenkins-plugin-cli-proxy-retry
+ && cp ${JENKINS_PATH}/install-plugins.sh /usr/local/bin/install-plugins.sh
 
 RUN chmod +x -R /usr/local/bin/jenkins.sh
 # Setup Jenkins end --
 
 # Setup plugins start --
-RUN /bin/jenkins-plugin-cli-proxy-retry -f ${JENKINS_PATH}/plugins.txt
+# SRUN /bin/jenkins-plugin-cli -f ${JENKINS_PATH}/plugins.txt
 # Setup plugins end --
 
 ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/jenkins.sh"]

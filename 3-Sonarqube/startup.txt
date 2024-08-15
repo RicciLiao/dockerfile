@@ -1,0 +1,12 @@
+docker run -it -d --name sonarqube \
+    --user sonarqube \
+    -p 9000:9000 \
+    -e TZ=Asia/Shanghai  \
+    -e SONAR_JDBC_URL=jdbc:oracle:thin:@//192.168.101.194:1521/ORCLPDB1 \
+    -e SONAR_JDBC_USERNAME=sonar \
+    -e SONAR_JDBC_PASSWORD=asl123456 \
+    -v /etc/localtime:/etc/localtime \
+    -v /home/dockerstorage/dockervolume/asl/sonarqube/data:/archive/sonarqube/data \
+    -v /home/dockerstorage/dockervolume/asl/sonarqube/extensions:/archive/sonarqube/extensions \
+    -v /home/dockerstorage/dockervolume/asl/sonarqube/logs:/archive/sonarqube/logs \
+    sonarqube:1.0

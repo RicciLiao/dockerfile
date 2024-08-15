@@ -1,8 +1,13 @@
 docker run  -it  -d \
- --name jenkins-bis  \
- --volume /home/dockerstorage/dockervolume/bis/jenkins-data:/var/jenkins_home \
- --volume /home/dockerstorage/dockervolume/bis/jdk:/usr/share/otherjdk \
+ --name jenkins-cims  \
+ --volume /home/dockerstorage/dockervolume/cims/jenkins-data:/var/jenkins_home \
+ --volume /home/dockerstorage/dockervolume/cims/jdk:/usr/share/otherjdk \
  --volume /etc/localtime:/etc/localtime \
+ --volume /home/dockerstorage/dockervolume/asl/maven/conf/settings.xml:/usr/share/maven-3.6.3/conf/settings.xml \
+ --volume /home/dockerstorage/dockervolume/asl/maven/repository:/usr/share/maven/repository \
+ --volume /home/dockerstorage/dockervolume/asl/nodejs/lib:/usr/share/node-v12.22.12/lib \
  --env TZ=Asia/Shanghai  \
- --publish 8000:8080  \
---publish 20000:50000 jenkins:1.0
+ --publish 8001:8080  \
+ --publish 20001:50000 \
+ --cpus=3.5 \
+jenkins:cims
